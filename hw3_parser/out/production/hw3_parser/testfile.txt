@@ -1,0 +1,6 @@
+int main(){
+    func() //...
+    int a = b
+    /* comment */
+
+}

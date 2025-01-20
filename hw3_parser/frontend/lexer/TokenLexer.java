@@ -1,4 +1,6 @@
-package frontend;
+package frontend.lexer;
+
+import frontend.utils.Printer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,7 +15,6 @@ public class TokenLexer {
     private Token token; //解析后的token
     private ArrayList<String> reserveWords; //保留字表
     private int lineNum; //记录行号
-    private int num; // 解析数值
     private TokenList tokenList; //解析后的token列表
     private boolean isSingle; //是否是单个符号
 
@@ -42,6 +43,9 @@ public class TokenLexer {
         boolean flag = false; //标记是否位于多行注释
         for (String line : source) {
             if (!flag) { //如果不在多行注释中
+                if(line.contains("//")){
+                    line = removeSingleComment(line);
+                }
                 if (line.contains("/*")) {
                     flag = !line.contains("*/");
                     if (!flag) { //同行注释就已经结束
@@ -86,8 +90,10 @@ public class TokenLexer {
                     } //此时拿到的可能是identifier或保留字
                     if (isReservedWord()) {
                         token = new Token(curStr, curStr, lineNum);
+                        tokenList.addToken(token);
                     } else {
                         token = new Token(TokenType.IDENFR, curStr, lineNum);
+                        tokenList.addToken(token);
                     }
                 }//解析标识符和保留字
                 else if (isDigit()) {
@@ -98,6 +104,7 @@ public class TokenLexer {
                         getNextChar();
                     }
                     token = new Token(TokenType.INTCON, curStr, lineNum);
+                    tokenList.addToken(token);
                 }//是数字
                 else if (curChar == '\'') {
                     catChar(); //‘
@@ -113,6 +120,7 @@ public class TokenLexer {
                         getNextChar();
                     }
                     token = new Token(TokenType.CHRCON, curStr, lineNum);
+                    tokenList.addToken(token);
                 } //是字符常量
                 else if (curChar == '\"') {
                     catChar(); //“
@@ -133,6 +141,7 @@ public class TokenLexer {
                     catChar(); //将“连接到curStr
                     getNextChar();
                     token = new Token(TokenType.STRCON, curStr, lineNum);
+                    tokenList.addToken(token);
                 } //是字符串常量
                 else {
                     isSingle = false;
@@ -155,6 +164,9 @@ public class TokenLexer {
         if (curPos < nowLine.length() && curPos >= 0) {
             //System.out.println(curPos);
             curChar = nowLine.charAt(curPos);
+        }
+        if (curPos >= nowLine.length()) {
+            curChar = '\0';
         }
     }
 
@@ -180,66 +192,79 @@ public class TokenLexer {
             catChar();
             getNextChar();
             token = new Token(TokenType.LPARENT, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == ')') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.RPARENT, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '{') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.LBRACE, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '}') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.RBRACE, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '[') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.LBRACK, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == ']') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.RBRACK, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == ',') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.COMMA, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == ';') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.SEMICN, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '+') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.PLUS, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '-') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.MINU, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '*') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.MULT, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '/') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.DIV, curStr, lineNum);
+            tokenList.addToken(token);
         } else if (curChar == '%') {
             isSingle = true;
             catChar();
             getNextChar();
             token = new Token(TokenType.MOD, curStr, lineNum);
+            tokenList.addToken(token);
         }
     }
 
@@ -251,28 +276,36 @@ public class TokenLexer {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.NEQ, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 token = new Token(TokenType.NOT, curStr, lineNum);
+                tokenList.addToken(token);
             }
         } else if (curChar == '&') {
             catChar();
             getNextChar();
             if (curChar != '&') {
-                printError('a', lineNum);
+                Printer.addError("a", lineNum);
+                token = new Token(TokenType.AND, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.AND, curStr, lineNum);
+                tokenList.addToken(token);
             }
         } else if (curChar == '|') {
             catChar();
             getNextChar();
             if (curChar != '|') {
-                printError('a', lineNum);
+                Printer.addError("a", lineNum);
+                token = new Token(TokenType.OR, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.OR, curStr, lineNum);
+                tokenList.addToken(token);
             }
         } else if (curChar == '<') {
             catChar();
@@ -281,8 +314,10 @@ public class TokenLexer {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.LEQ, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 token = new Token(TokenType.LSS, curStr, lineNum);
+                tokenList.addToken(token);
             }
         } else if (curChar == '>') {
             catChar();
@@ -291,8 +326,10 @@ public class TokenLexer {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.GEQ, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 token = new Token(TokenType.GRE, curStr, lineNum);
+                tokenList.addToken(token);
             }
         } else if (curChar == '=') {
             catChar();
@@ -301,8 +338,10 @@ public class TokenLexer {
                 catChar();
                 getNextChar();
                 token = new Token(TokenType.EQL, curStr, lineNum);
+                tokenList.addToken(token);
             } else {
                 token = new Token(TokenType.ASSIGN, curStr, lineNum);
+                tokenList.addToken(token);
             }
         }
     }
@@ -337,13 +376,7 @@ public class TokenLexer {
         return line.substring(commentEnd + 2);
     }
 
-    public void printError(char error, int lineNum) {
-        String outputPath = "error.txt";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath, true))) {
-            writer.write(lineNum + " " + error + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //System.out.println(lineNum + " " + error);
+    public TokenList getTokenList() {
+        return tokenList;
     }
 }

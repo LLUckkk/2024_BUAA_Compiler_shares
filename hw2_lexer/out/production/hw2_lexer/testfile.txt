@@ -1,10 +1,10 @@
-int main() {
-	printf("22371101\n");
-	int a = 0;
-	{
-		int a = 3;
-		printf("%d",a);
-		/*zhushi*/
-	}
-	return 0;
+int main(){
+    /* comment
+    jkjkj
+    jkjkjk
+    */
+    if(1 & 2){
+        printf("2024 Compiler\n");
+    }
+    return 0;
 }
