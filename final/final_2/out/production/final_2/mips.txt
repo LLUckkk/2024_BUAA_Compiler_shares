@@ -1,0 +1,76 @@
+.data
+
+
+
+.text
+jal main
+
+j exit
+
+main:
+
+# %local_var_0 = alloca i32
+addi $t0, $sp, -4
+
+
+# %local_var_1 = call i32 @getint()
+
+li $v0 5
+syscall
+move $t1 $v0
+
+# store i32 %local_var_1, i32* %local_var_0
+sw $t1, 0($t0)
+
+
+# %local_var_2 = alloca i32
+addi $t1, $sp, -8
+
+
+# %local_var_3 = call i32 @getint()
+
+li $v0 5
+syscall
+move $t2 $v0
+
+# store i32 %local_var_3, i32* %local_var_2
+sw $t2, 0($t1)
+
+
+# %local_var_4 = alloca i32
+addi $t2, $sp, -12
+
+
+# %local_var_5 = load i32, i32* %local_var_0
+lw $t0, 0($t0)
+
+
+# %local_var_6 = load i32, i32* %local_var_2
+lw $t1, 0($t1)
+
+
+# %local_var_7 = bitand i32 %local_var_5, %local_var_6
+and $t0, $t0, $t1
+
+
+# store i32 %local_var_7, i32* %local_var_4
+sw $t0, 0($t2)
+
+
+# %local_var_8 = load i32, i32* %local_var_4
+lw $t0, 0($t2)
+
+
+# call void @putint(i32 %local_var_8)
+
+move $a0 $t0
+li $v0 1
+syscall
+
+# ret i32 0
+li $v0 0
+jr $ra
+
+exit:
+li $v0 10
+syscall

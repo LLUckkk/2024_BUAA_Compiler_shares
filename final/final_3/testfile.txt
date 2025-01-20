@@ -1,0 +1,6 @@
+int main(){
+    int i = 0;
+    int a = ++i;
+    printf("%d %d", a, i);
+    return 0;
+}

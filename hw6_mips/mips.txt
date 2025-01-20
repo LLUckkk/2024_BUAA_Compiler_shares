@@ -1,0 +1,730 @@
+.data
+global_var_0: .word 10
+
+global_var_1: .byte 65
+
+global_var_2: .byte 66
+
+global_var_3: .word 0
+
+global_var_4: .word 5
+
+global_var_5: .word 15
+
+global_var_6: .byte 0
+
+str_0: .asciiz "Function with no parameters\n"
+
+str_1: .asciiz "Function with single parameter, x = "
+
+str_2: .asciiz "\n"
+
+str_3: .asciiz "Function with parameters: a = "
+
+str_4: .asciiz ", b = "
+
+str_5: .asciiz "\n"
+
+str_6: .asciiz "Function returning a character\n"
+
+str_7: .asciiz "22373141\n"
+
+str_8: .asciiz "Result of functionWithParams: "
+
+str_9: .asciiz "\n"
+
+str_10: .asciiz "Character returned: "
+
+str_11: .asciiz "\n"
+
+str_12: .asciiz "Result of functionSingleParam: "
+
+str_13: .asciiz "\n"
+
+str_14: .asciiz "Input integer: "
+
+str_15: .asciiz "\n"
+
+str_16: .asciiz "Input character: "
+
+str_17: .asciiz "\n"
+
+
+
+
+.text
+jal main
+
+j exit
+
+func_functionNoParam:
+block_0:
+
+# call void @putstr(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @str_0, i64 0, i64 0))
+la $a0, str_0
+li $v0 4
+syscall
+
+# ret void
+jr $ra
+
+func_functionSingleParam:
+block_1:
+
+# %local_var_0 = alloca i32
+addi $k0, $sp, -8
+
+sw $k0, -12($sp)
+
+
+# store i32 %param_0, i32* %local_var_0
+lw $k1, -12($sp)
+
+lw $k0, -4($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_1 = load i32, i32* %local_var_0
+lw $k0, -12($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -16($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([37 x i8], [37 x i8]* @str_1, i64 0, i64 0))
+la $a0, str_1
+li $v0 4
+syscall
+
+# call void @putint(i32 %local_var_1)
+
+lw $a0, -16($sp)
+
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_2, i64 0, i64 0))
+la $a0, str_2
+li $v0 4
+syscall
+
+# %local_var_5 = load i32, i32* %local_var_0
+lw $k0, -12($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -20($sp)
+
+
+# %local_var_6 = load i32, i32* %local_var_0
+lw $k0, -12($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -24($sp)
+
+
+# %local_var_7 = sub i32 %local_var_5, %local_var_6
+lw $k0, -20($sp)
+
+lw $k1, -24($sp)
+
+sub $k0, $k0, $k1
+
+sw $k0, -28($sp)
+
+
+# %local_var_8 = add i32 %local_var_7, 8
+li $k1 8
+lw $k0, -28($sp)
+
+add $k0, $k0, $k1
+
+sw $k0, -32($sp)
+
+
+# ret i32 %local_var_8
+lw $v0, -32($sp)
+
+jr $ra
+
+func_functionWithParams:
+block_2:
+
+# %local_var_0 = alloca i32
+addi $k0, $sp, -12
+
+sw $k0, -16($sp)
+
+
+# store i32 %param_1, i32* %local_var_0
+lw $k1, -16($sp)
+
+lw $k0, -4($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_1 = alloca i8
+addi $k0, $sp, -17
+
+sw $k0, -24($sp)
+
+
+# store i8 %param_2, i8* %local_var_1
+lw $k1, -24($sp)
+
+lb $k0, -8($sp)
+
+sb $k0, 0($k1)
+
+
+# %local_var_2 = load i32, i32* %local_var_0
+lw $k0, -16($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -28($sp)
+
+
+# %local_var_3 = load i8, i8* %local_var_1
+lw $k0, -24($sp)
+
+lb $k1, 0($k0)
+
+sb $k1, -29($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @str_3, i64 0, i64 0))
+la $a0, str_3
+li $v0 4
+syscall
+
+# call void @putint(i32 %local_var_2)
+
+lw $a0, -28($sp)
+
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @str_4, i64 0, i64 0))
+la $a0, str_4
+li $v0 4
+syscall
+
+# %local_var_7 = zext i8 %local_var_3 to i32
+lb $k0, -29($sp)
+
+sw $k0, -36($sp)
+
+
+# call void @putch(i32 %local_var_7)
+
+lw $a0, -36($sp)
+
+li $v0 11
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_5, i64 0, i64 0))
+la $a0, str_5
+li $v0 4
+syscall
+
+# %local_var_10 = load i32, i32* %local_var_0
+lw $k0, -16($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -40($sp)
+
+
+# %local_var_11 = load i8, i8* %local_var_1
+lw $k0, -24($sp)
+
+lb $k1, 0($k0)
+
+sb $k1, -41($sp)
+
+
+# %local_var_12 = zext i8 %local_var_11 to i32
+lb $k0, -41($sp)
+
+sw $k0, -48($sp)
+
+
+# %local_var_13 = add i32 %local_var_10, %local_var_12
+lw $k0, -40($sp)
+
+lw $k1, -48($sp)
+
+add $k0, $k0, $k1
+
+sw $k0, -52($sp)
+
+
+# ret i32 %local_var_13
+lw $v0, -52($sp)
+
+jr $ra
+
+func_functionReturnChar:
+block_3:
+
+# call void @putstr(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @str_6, i64 0, i64 0))
+la $a0, str_6
+li $v0 4
+syscall
+
+# ret i8 67
+li $v0 67
+jr $ra
+
+main:
+
+# call void @putstr(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @str_7, i64 0, i64 0))
+la $a0, str_7
+li $v0 4
+syscall
+
+# %local_var_1 = alloca i32
+addi $k0, $sp, -4
+
+sw $k0, -8($sp)
+
+
+# %local_var_2 = load i32, i32* @global_var_0
+la $k0, global_var_0
+lw $k1, 0($k0)
+
+sw $k1, -12($sp)
+
+
+# %local_var_3 = load i32, i32* @global_var_4
+la $k0, global_var_4
+lw $k1, 0($k0)
+
+sw $k1, -16($sp)
+
+
+# %local_var_4 = add i32 %local_var_2, %local_var_3
+lw $k0, -12($sp)
+
+lw $k1, -16($sp)
+
+add $k0, $k0, $k1
+
+sw $k0, -20($sp)
+
+
+# store i32 %local_var_4, i32* %local_var_1
+lw $k1, -8($sp)
+
+lw $k0, -20($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_5 = load i32, i32* %local_var_1
+lw $k0, -8($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -24($sp)
+
+
+# %local_var_6 = load i32, i32* @global_var_5
+la $k0, global_var_5
+lw $k1, 0($k0)
+
+sw $k1, -28($sp)
+
+
+# %local_var_7 = mul i32 %local_var_5, %local_var_6
+lw $k0, -24($sp)
+
+lw $k1, -28($sp)
+
+mult $k0 $k1
+mflo $k0
+sw $k0, -32($sp)
+
+
+# store i32 %local_var_7, i32* @global_var_3
+la $k1, global_var_3
+lw $k0, -32($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_8 = load i8, i8* @global_var_1
+la $k0, global_var_1
+lb $k1, 0($k0)
+
+sb $k1, -33($sp)
+
+
+# store i8 %local_var_8, i8* @global_var_6
+la $k1, global_var_6
+lb $k0, -33($sp)
+
+sb $k0, 0($k1)
+
+
+# %local_var_9 = load i32, i32* %local_var_1
+lw $k0, -8($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -40($sp)
+
+
+# %local_var_10 = load i32, i32* @global_var_3
+la $k0, global_var_3
+lw $k1, 0($k0)
+
+sw $k1, -44($sp)
+
+
+# %local_var_11 = add i32 %local_var_9, %local_var_10
+lw $k0, -40($sp)
+
+lw $k1, -44($sp)
+
+add $k0, $k0, $k1
+
+sw $k0, -48($sp)
+
+
+# call void @func_functionNoParam()
+sw $sp, -52($sp)
+
+sw $ra, -56($sp)
+
+addi $sp, $sp, -56
+
+jal func_functionNoParam
+
+lw $ra, 0($sp)
+
+lw $sp, 4($sp)
+
+
+# %local_var_13 = alloca i32
+addi $k0, $sp, -52
+
+sw $k0, -56($sp)
+
+
+# %local_var_14 = load i32, i32* %local_var_1
+lw $k0, -8($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -60($sp)
+
+
+# %local_var_15 = load i8, i8* @global_var_6
+la $k0, global_var_6
+lb $k1, 0($k0)
+
+sb $k1, -61($sp)
+
+
+# %local_var_16 = call i32 @func_functionWithParams(i32 %local_var_14, i8 %local_var_15)
+sw $sp, -68($sp)
+
+sw $ra, -72($sp)
+
+lw $k0, -60($sp)
+
+sw $k0, -76($sp)
+
+lb $k0, -61($sp)
+
+sw $k0, -80($sp)
+
+addi $sp, $sp, -72
+
+jal func_functionWithParams
+
+lw $ra, 0($sp)
+
+lw $sp, 4($sp)
+
+sw $v0, -68($sp)
+
+
+# store i32 %local_var_16, i32* %local_var_13
+lw $k1, -56($sp)
+
+lw $k0, -68($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_17 = load i32, i32* %local_var_13
+lw $k0, -56($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -72($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @str_8, i64 0, i64 0))
+la $a0, str_8
+li $v0 4
+syscall
+
+# call void @putint(i32 %local_var_17)
+
+lw $a0, -72($sp)
+
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_9, i64 0, i64 0))
+la $a0, str_9
+li $v0 4
+syscall
+
+# %local_var_21 = alloca i8
+addi $k0, $sp, -73
+
+sw $k0, -80($sp)
+
+
+# %local_var_22 = call i8 @func_functionReturnChar()
+sw $sp, -84($sp)
+
+sw $ra, -88($sp)
+
+addi $sp, $sp, -88
+
+jal func_functionReturnChar
+
+lw $ra, 0($sp)
+
+lw $sp, 4($sp)
+
+sb $v0, -81($sp)
+
+
+# store i8 %local_var_22, i8* %local_var_21
+lw $k1, -80($sp)
+
+lb $k0, -81($sp)
+
+sb $k0, 0($k1)
+
+
+# %local_var_23 = load i8, i8* %local_var_21
+lw $k0, -80($sp)
+
+lb $k1, 0($k0)
+
+sb $k1, -82($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([21 x i8], [21 x i8]* @str_10, i64 0, i64 0))
+la $a0, str_10
+li $v0 4
+syscall
+
+# %local_var_25 = zext i8 %local_var_23 to i32
+lb $k0, -82($sp)
+
+sw $k0, -88($sp)
+
+
+# call void @putch(i32 %local_var_25)
+
+lw $a0, -88($sp)
+
+li $v0 11
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_11, i64 0, i64 0))
+la $a0, str_11
+li $v0 4
+syscall
+
+# %local_var_28 = alloca i32
+addi $k0, $sp, -92
+
+sw $k0, -96($sp)
+
+
+# %local_var_29 = load i32, i32* %local_var_1
+lw $k0, -8($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -100($sp)
+
+
+# %local_var_30 = call i32 @func_functionSingleParam(i32 %local_var_29)
+sw $sp, -104($sp)
+
+sw $ra, -108($sp)
+
+lw $k0, -100($sp)
+
+sw $k0, -112($sp)
+
+addi $sp, $sp, -108
+
+jal func_functionSingleParam
+
+lw $ra, 0($sp)
+
+lw $sp, 4($sp)
+
+sw $v0, -104($sp)
+
+
+# store i32 %local_var_30, i32* %local_var_28
+lw $k1, -96($sp)
+
+lw $k0, -104($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_31 = load i32, i32* %local_var_28
+lw $k0, -96($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -108($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @str_12, i64 0, i64 0))
+la $a0, str_12
+li $v0 4
+syscall
+
+# call void @putint(i32 %local_var_31)
+
+lw $a0, -108($sp)
+
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_13, i64 0, i64 0))
+la $a0, str_13
+li $v0 4
+syscall
+
+# %local_var_35 = alloca i32
+addi $k0, $sp, -112
+
+sw $k0, -116($sp)
+
+
+# %local_var_36 = call i32 @getint()
+
+li $v0 5
+syscall
+sw $v0, -120($sp)
+
+
+# store i32 %local_var_36, i32* %local_var_35
+lw $k1, -116($sp)
+
+lw $k0, -120($sp)
+
+sw $k0, 0($k1)
+
+
+# %local_var_37 = load i32, i32* %local_var_35
+lw $k0, -116($sp)
+
+lw $k1, 0($k0)
+
+sw $k1, -124($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([16 x i8], [16 x i8]* @str_14, i64 0, i64 0))
+la $a0, str_14
+li $v0 4
+syscall
+
+# call void @putint(i32 %local_var_37)
+
+lw $a0, -124($sp)
+
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_15, i64 0, i64 0))
+la $a0, str_15
+li $v0 4
+syscall
+
+# %local_var_41 = alloca i8
+addi $k0, $sp, -125
+
+sw $k0, -132($sp)
+
+
+# %local_var_42 = call i32 @getchar()
+
+li $v0 12
+syscall
+sw $v0, -136($sp)
+
+
+# %local_var_43 = trunc i32 %local_var_42 to i8
+lw $k0, -136($sp)
+
+sb $k0, -137($sp)
+
+
+# store i8 %local_var_43, i8* %local_var_41
+lw $k1, -132($sp)
+
+lb $k0, -137($sp)
+
+sb $k0, 0($k1)
+
+
+# %local_var_44 = load i8, i8* %local_var_41
+lw $k0, -132($sp)
+
+lb $k1, 0($k0)
+
+sb $k1, -138($sp)
+
+
+# call void @putstr(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @str_16, i64 0, i64 0))
+la $a0, str_16
+li $v0 4
+syscall
+
+# %local_var_46 = zext i8 %local_var_44 to i32
+lb $k0, -138($sp)
+
+sw $k0, -144($sp)
+
+
+# call void @putch(i32 %local_var_46)
+
+lw $a0, -144($sp)
+
+li $v0 11
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_17, i64 0, i64 0))
+la $a0, str_17
+li $v0 4
+syscall
+
+# ret i32 0
+li $v0 0
+jr $ra
+
+exit:
+li $v0 10
+syscall

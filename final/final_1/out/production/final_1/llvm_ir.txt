@@ -1,0 +1,49 @@
+declare i32 @getint();
+declare void @putint(i32);
+declare i32 @getchar()
+declare void @putch(i32)
+declare void @putstr(i8*)
+
+
+
+@str_0 = constant [2 x i8] c" \00"
+
+
+
+
+
+
+define dso_local i32 @main()
+{
+%local_var_0 = alloca i32
+store i32 0, i32* %local_var_0
+%local_var_1 = alloca i32
+store i32 0, i32* %local_var_1
+br label %block_2
+
+block_0:
+%local_var_6 = load i32, i32* %local_var_0
+call void @putint(i32 %local_var_6)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_0, i64 0, i64 0))
+br label %block_3
+
+block_1:
+ret i32 0
+
+block_2:
+%local_var_2 = load i32, i32* %local_var_0
+%local_var_3 = icmp slt i32 %local_var_2, 5
+%local_var_4 = zext i1 %local_var_3 to i32
+%local_var_5 = icmp ne i32 %local_var_4, 0
+br i1 %local_var_5, label %block_0, label %block_1
+
+block_3:
+%local_var_9 = load i32, i32* %local_var_1
+%local_var_10 = add i32 %local_var_9, 1
+store i32 %local_var_10, i32* %local_var_1
+store i32 %local_var_10, i32* %local_var_0
+br label %block_2
+
+}
+

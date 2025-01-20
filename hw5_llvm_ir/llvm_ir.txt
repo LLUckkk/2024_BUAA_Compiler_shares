@@ -1,0 +1,156 @@
+declare i32 @getint();
+declare void @putint(i32);
+declare i32 @getchar()
+declare void @putch(i32)
+declare void @putstr(i8*)
+
+
+
+@str_0 = constant [2 x i8] c"\0A\00"
+@str_1 = constant [10 x i8] c"21373457\0A\00"
+@str_2 = constant [14 x i8] c"And success!\0A\00"
+@str_3 = constant [8 x i8] c"ERROR!\0A\00"
+@str_4 = constant [10 x i8] c"Or pass!\0A\00"
+@str_5 = constant [15 x i8] c"Test1 Success!\00"
+
+
+
+@global_var_0 = dso_local global i32 0
+@global_var_1 = dso_local global i32 1
+@global_var_2 = dso_local global i32 2
+@global_var_3 = dso_local global i32 3
+
+
+
+define dso_local void @func_fun()
+{
+block_0:
+%local_var_0 = alloca i32
+store i32 1, i32* %local_var_0
+%local_var_1 = alloca i32
+store i32 1, i32* %local_var_1
+br label %block_3
+
+block_1:
+%local_var_6 = load i32, i32* %local_var_1
+%local_var_7 = mul i32 %local_var_6, 2
+store i32 %local_var_7, i32* %local_var_1
+br label %block_3
+
+block_2:
+%local_var_8 = load i32, i32* %local_var_1
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_0, i64 0, i64 0))
+call void @putint(i32 %local_var_8)
+
+ret void
+
+block_3:
+%local_var_2 = load i32, i32* %local_var_1
+%local_var_3 = icmp slt i32 %local_var_2, 1000
+%local_var_4 = zext i1 %local_var_3 to i32
+%local_var_5 = icmp ne i32 %local_var_4, 0
+br i1 %local_var_5, label %block_1, label %block_2
+
+}
+
+define dso_local i32 @main()
+{
+call void @putstr(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @str_1, i64 0, i64 0))
+%local_var_1 = load i32, i32* @global_var_0
+%local_var_2 = load i32, i32* @global_var_2
+%local_var_3 = add i32 %local_var_1, %local_var_2
+%local_var_4 = load i32, i32* @global_var_3
+%local_var_5 = load i32, i32* @global_var_1
+%local_var_6 = sub i32 %local_var_4, %local_var_5
+%local_var_7 = icmp eq i32 %local_var_3, %local_var_6
+br i1 %local_var_7, label %block_6, label %block_5
+
+block_4:
+%local_var_10 = load i32, i32* @global_var_0
+%local_var_11 = icmp ne i32 %local_var_10, 0
+br i1 %local_var_11, label %block_7, label %block_10
+
+block_5:
+%local_var_25 = load i32, i32* @global_var_3
+%local_var_26 = icmp ne i32 %local_var_25, 3
+br i1 %local_var_26, label %block_12, label %block_14
+
+block_6:
+%local_var_8 = load i32, i32* @global_var_1
+%local_var_9 = icmp ne i32 %local_var_8, 0
+br i1 %local_var_9, label %block_4, label %block_5
+
+block_7:
+call void @putstr(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @str_3, i64 0, i64 0))
+br label %block_8
+
+block_8:
+br label %block_5
+
+block_9:
+call void @putstr(i8* getelementptr inbounds ([14 x i8], [14 x i8]* @str_2, i64 0, i64 0))
+br label %block_8
+
+block_10:
+%local_var_12 = load i32, i32* @global_var_0
+%local_var_13 = icmp eq i32 0, %local_var_12
+%local_var_14 = zext i1 %local_var_13 to i32
+%local_var_15 = icmp ne i32 %local_var_14, 0
+br i1 %local_var_15, label %block_11, label %block_9
+
+block_11:
+%local_var_16 = load i32, i32* @global_var_1
+%local_var_17 = add i32 %local_var_16, 1
+%local_var_18 = load i32, i32* @global_var_2
+%local_var_19 = add i32 %local_var_17, %local_var_18
+%local_var_20 = icmp slt i32 %local_var_19, 0
+%local_var_21 = zext i1 %local_var_20 to i32
+%local_var_22 = icmp ne i32 %local_var_21, 0
+br i1 %local_var_22, label %block_7, label %block_9
+
+block_12:
+%local_var_31 = load i32, i32* @global_var_1
+%local_var_32 = srem i32 %local_var_31, 2
+%local_var_33 = add i32 %local_var_32, 3
+%local_var_34 = mul i32 4, 2
+%local_var_35 = sub i32 %local_var_33, %local_var_34
+%local_var_36 = load i32, i32* @global_var_3
+%local_var_37 = add i32 %local_var_35, %local_var_36
+%local_var_38 = load i32, i32* @global_var_2
+%local_var_39 = add i32 %local_var_37, %local_var_38
+%local_var_40 = icmp sle i32 %local_var_39, 100
+%local_var_41 = zext i1 %local_var_40 to i32
+%local_var_42 = icmp ne i32 %local_var_41, 0
+br i1 %local_var_42, label %block_15, label %block_17
+
+block_13:
+call void @putstr(i8* getelementptr inbounds ([15 x i8], [15 x i8]* @str_5, i64 0, i64 0))
+call void @func_fun()
+call void @func_fun()
+call void @func_fun()
+call void @func_fun()
+call void @func_fun()
+call void @func_fun()
+ret i32 0
+
+block_14:
+%local_var_27 = load i32, i32* @global_var_2
+%local_var_28 = sub i32 %local_var_27, 22
+%local_var_29 = sub i32 0, 20
+%local_var_30 = icmp eq i32 %local_var_28, %local_var_29
+br i1 %local_var_30, label %block_12, label %block_13
+
+block_15:
+call void @putstr(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @str_4, i64 0, i64 0))
+br label %block_16
+
+block_16:
+br label %block_13
+
+block_17:
+%local_var_43 = load i32, i32* @global_var_1
+%local_var_44 = icmp ne i32 %local_var_43, 0
+br i1 %local_var_44, label %block_15, label %block_16
+
+}
+

@@ -1,0 +1,109 @@
+.data
+str_0: .asciiz " "
+
+
+
+
+.text
+jal main
+
+j exit
+
+main:
+
+# %local_var_0 = alloca i32
+addi $t0, $sp, -4
+
+
+# store i32 0, i32* %local_var_0
+li $k0 0
+sw $k0, 0($t0)
+
+
+# %local_var_1 = alloca i32
+addi $t1, $sp, -8
+
+
+# store i32 0, i32* %local_var_1
+li $k0 0
+sw $k0, 0($t1)
+
+
+# br label %block_2
+j block_2
+
+block_0:
+
+# %local_var_6 = load i32, i32* %local_var_0
+lw $t2, 0($t0)
+
+
+# call void @putint(i32 %local_var_6)
+
+move $a0 $t2
+li $v0 1
+syscall
+
+# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_0, i64 0, i64 0))
+la $a0, str_0
+li $v0 4
+syscall
+
+# br label %block_3
+j block_3
+
+block_1:
+
+# ret i32 0
+li $v0 0
+jr $ra
+
+block_2:
+
+# %local_var_2 = load i32, i32* %local_var_0
+lw $t2, 0($t0)
+
+
+# %local_var_3 = icmp slt i32 %local_var_2, 5
+li $k1 5
+slt $t2, $t2, $k1
+
+# %local_var_4 = zext i1 %local_var_3 to i32
+sw $t2, -12($sp)
+
+
+# %local_var_5 = icmp ne i32 %local_var_4, 0
+lw $k0, -12($sp)
+
+li $k1 0
+sne $t2, $k0, $k1
+
+# br i1 %local_var_5, label %block_0, label %block_1
+bne $t2, $zero, block_0
+j block_1
+
+block_3:
+
+# %local_var_9 = load i32, i32* %local_var_1
+lw $t2, 0($t1)
+
+
+# %local_var_10 = add i32 %local_var_9, 1
+li $k1 1
+addu $t2, $t2, $k1
+
+
+# store i32 %local_var_10, i32* %local_var_1
+sw $t2, 0($t1)
+
+
+# store i32 %local_var_10, i32* %local_var_0
+sw $t2, 0($t0)
+
+
+# br label %block_2
+j block_2
+
+exit:
+li $v0 10
+syscall

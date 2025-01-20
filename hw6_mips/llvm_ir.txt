@@ -1,0 +1,168 @@
+declare i32 @getint();
+declare void @putint(i32);
+declare i32 @getchar()
+declare void @putch(i32)
+declare void @putstr(i8*)
+
+
+
+@str_0 = constant [29 x i8] c"Function with no parameters\0A\00"
+@str_1 = constant [37 x i8] c"Function with single parameter, x = \00"
+@str_2 = constant [2 x i8] c"\0A\00"
+@str_3 = constant [31 x i8] c"Function with parameters: a = \00"
+@str_4 = constant [7 x i8] c", b = \00"
+@str_5 = constant [2 x i8] c"\0A\00"
+@str_6 = constant [32 x i8] c"Function returning a character\0A\00"
+@str_7 = constant [10 x i8] c"22373141\0A\00"
+@str_8 = constant [31 x i8] c"Result of functionWithParams: \00"
+@str_9 = constant [2 x i8] c"\0A\00"
+@str_10 = constant [21 x i8] c"Character returned: \00"
+@str_11 = constant [2 x i8] c"\0A\00"
+@str_12 = constant [32 x i8] c"Result of functionSingleParam: \00"
+@str_13 = constant [2 x i8] c"\0A\00"
+@str_14 = constant [16 x i8] c"Input integer: \00"
+@str_15 = constant [2 x i8] c"\0A\00"
+@str_16 = constant [18 x i8] c"Input character: \00"
+@str_17 = constant [2 x i8] c"\0A\00"
+
+
+
+@global_var_0 = dso_local global i32 10
+@global_var_1 = dso_local global i8 65
+@global_var_2 = dso_local global i8 66
+@global_var_3 = dso_local global i32 0
+@global_var_4 = dso_local global i32 5
+@global_var_5 = dso_local global i32 15
+@global_var_6 = dso_local global i8 0
+
+
+
+define dso_local void @func_functionNoParam()
+{
+block_0:
+call void @putstr(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @str_0, i64 0, i64 0))
+ret void
+
+}
+
+define dso_local i32 @func_functionSingleParam(i32 %param_0)
+{
+block_1:
+%local_var_0 = alloca i32
+store i32 %param_0, i32* %local_var_0
+%local_var_1 = load i32, i32* %local_var_0
+call void @putstr(i8* getelementptr inbounds ([37 x i8], [37 x i8]* @str_1, i64 0, i64 0))
+call void @putint(i32 %local_var_1)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_2, i64 0, i64 0))
+%local_var_5 = load i32, i32* %local_var_0
+%local_var_6 = load i32, i32* %local_var_0
+%local_var_7 = sub i32 %local_var_5, %local_var_6
+%local_var_8 = add i32 %local_var_7, 8
+ret i32 %local_var_8
+
+}
+
+define dso_local i32 @func_functionWithParams(i32 %param_1, i8 %param_2)
+{
+block_2:
+%local_var_0 = alloca i32
+store i32 %param_1, i32* %local_var_0
+%local_var_1 = alloca i8
+store i8 %param_2, i8* %local_var_1
+%local_var_2 = load i32, i32* %local_var_0
+%local_var_3 = load i8, i8* %local_var_1
+call void @putstr(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @str_3, i64 0, i64 0))
+call void @putint(i32 %local_var_2)
+
+call void @putstr(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @str_4, i64 0, i64 0))
+%local_var_7 = zext i8 %local_var_3 to i32
+call void @putch(i32 %local_var_7)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_5, i64 0, i64 0))
+%local_var_10 = load i32, i32* %local_var_0
+%local_var_11 = load i8, i8* %local_var_1
+%local_var_12 = zext i8 %local_var_11 to i32
+%local_var_13 = add i32 %local_var_10, %local_var_12
+ret i32 %local_var_13
+
+}
+
+define dso_local i8 @func_functionReturnChar()
+{
+block_3:
+call void @putstr(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @str_6, i64 0, i64 0))
+ret i8 67
+
+}
+
+define dso_local i32 @main()
+{
+call void @putstr(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @str_7, i64 0, i64 0))
+%local_var_1 = alloca i32
+%local_var_2 = load i32, i32* @global_var_0
+%local_var_3 = load i32, i32* @global_var_4
+%local_var_4 = add i32 %local_var_2, %local_var_3
+store i32 %local_var_4, i32* %local_var_1
+%local_var_5 = load i32, i32* %local_var_1
+%local_var_6 = load i32, i32* @global_var_5
+%local_var_7 = mul i32 %local_var_5, %local_var_6
+store i32 %local_var_7, i32* @global_var_3
+%local_var_8 = load i8, i8* @global_var_1
+store i8 %local_var_8, i8* @global_var_6
+%local_var_9 = load i32, i32* %local_var_1
+%local_var_10 = load i32, i32* @global_var_3
+%local_var_11 = add i32 %local_var_9, %local_var_10
+call void @func_functionNoParam()
+%local_var_13 = alloca i32
+%local_var_14 = load i32, i32* %local_var_1
+%local_var_15 = load i8, i8* @global_var_6
+%local_var_16 = call i32 @func_functionWithParams(i32 %local_var_14, i8 %local_var_15)
+store i32 %local_var_16, i32* %local_var_13
+%local_var_17 = load i32, i32* %local_var_13
+call void @putstr(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @str_8, i64 0, i64 0))
+call void @putint(i32 %local_var_17)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_9, i64 0, i64 0))
+%local_var_21 = alloca i8
+%local_var_22 = call i8 @func_functionReturnChar()
+store i8 %local_var_22, i8* %local_var_21
+%local_var_23 = load i8, i8* %local_var_21
+call void @putstr(i8* getelementptr inbounds ([21 x i8], [21 x i8]* @str_10, i64 0, i64 0))
+%local_var_25 = zext i8 %local_var_23 to i32
+call void @putch(i32 %local_var_25)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_11, i64 0, i64 0))
+%local_var_28 = alloca i32
+%local_var_29 = load i32, i32* %local_var_1
+%local_var_30 = call i32 @func_functionSingleParam(i32 %local_var_29)
+store i32 %local_var_30, i32* %local_var_28
+%local_var_31 = load i32, i32* %local_var_28
+call void @putstr(i8* getelementptr inbounds ([32 x i8], [32 x i8]* @str_12, i64 0, i64 0))
+call void @putint(i32 %local_var_31)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_13, i64 0, i64 0))
+%local_var_35 = alloca i32
+%local_var_36 = call i32 @getint()
+
+store i32 %local_var_36, i32* %local_var_35
+%local_var_37 = load i32, i32* %local_var_35
+call void @putstr(i8* getelementptr inbounds ([16 x i8], [16 x i8]* @str_14, i64 0, i64 0))
+call void @putint(i32 %local_var_37)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_15, i64 0, i64 0))
+%local_var_41 = alloca i8
+%local_var_42 = call i32 @getchar()
+
+%local_var_43 = trunc i32 %local_var_42 to i8
+store i8 %local_var_43, i8* %local_var_41
+%local_var_44 = load i8, i8* %local_var_41
+call void @putstr(i8* getelementptr inbounds ([18 x i8], [18 x i8]* @str_16, i64 0, i64 0))
+%local_var_46 = zext i8 %local_var_44 to i32
+call void @putch(i32 %local_var_46)
+
+call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_17, i64 0, i64 0))
+ret i32 0
+
+}
+
