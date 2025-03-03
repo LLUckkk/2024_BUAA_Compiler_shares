@@ -23,6 +23,7 @@ public class OptimizeManager {
         new ActiveAnalysis(module).optimize();
         //寄存器分配
         new DistributeReg(module).optimize();
+        new RemoveDeadCode(module).optimize();
         Printer.printPhiLLVM(module);
 
         //去除phi指令
