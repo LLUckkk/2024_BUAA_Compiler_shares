@@ -10,17 +10,19 @@ import mips.assembly.MemoryAsmb;
 import mips.assembly.MoveAsmb;
 
 public class ReturnInstr extends Instr {
-    private Value retValue;
-
     public ReturnInstr(String name, Value retValue) {
         super(BaseType.VOID, name, InstrType.RETURN);
         if (retValue != null) {
             addOperand(retValue);
         }
-        this.retValue = retValue;
+    }
+
+    public Value getRetValue() {
+        return operands.get(0);
     }
 
     public String toString() {
+        Value retValue = getRetValue();
         StringBuilder sb = new StringBuilder();
         sb.append("ret ");
         if (retValue != null) {
@@ -34,6 +36,7 @@ public class ReturnInstr extends Instr {
     }
 
     public void toMips() {
+        Value retValue = getRetValue();
         super.toMips();
         //如果不是void，把返回值放入v0
         //最后jr跳

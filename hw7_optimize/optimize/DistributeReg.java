@@ -3,6 +3,7 @@ package optimize;
 import llvm_ir.*;
 import llvm_ir.Module;
 import llvm_ir.instr.AllocaInstr;
+import llvm_ir.instr.Phi;
 import llvm_ir.instr.TruncInstr;
 import llvm_ir.instr.ZextInstr;
 import mips.Register;
@@ -56,12 +57,14 @@ public class DistributeReg {
         //基本快的out中没有这个operand，如果其分配了寄存器，先释放
         for (Instr instr : instrList) {
             //没有写phi指令
-            ArrayList<Value> operands = instr.getOperands();
-            for (Value op : operands) {
-                if (lastPos.get(op).equals(instr) && !block.getOut().contains(op)) {
-                    if (valueRegMap.containsKey(op)) {
-                        regValueMap.remove(valueRegMap.get(op));
-                        noUse.add(op);
+            if(! (instr instanceof Phi)) {
+                ArrayList<Value> operands = instr.getOperands();
+                for (Value op : operands) {
+                    if (lastPos.get(op).equals(instr) && !block.getOut().contains(op)) {
+                        if (valueRegMap.containsKey(op)) {
+                            regValueMap.remove(valueRegMap.get(op));
+                            noUse.add(op);
+                        }
                     }
                 }
             }
@@ -110,7 +113,7 @@ public class DistributeReg {
             }
         }
 
-        //释放定义变量所占用的寄存器 为啥？
+        //释放定义变量所占用的寄存器
         for (Value value : def_instr) {
             if (valueRegMap.containsKey(value)) {
                 regValueMap.remove(valueRegMap.get(value));

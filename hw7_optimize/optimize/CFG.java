@@ -88,7 +88,7 @@ public class CFG {
         LinkedList<BasicBlock> blocks = f.getBlocks();
         BasicBlock entry = f.getBlocks().get(0);
         for (BasicBlock block : blocks) {
-            //这里的block是支配别的block的，domiMap放的是这个块支配了谁，而不是被谁支配
+            //这里的block是支配别的block的，domiMap放的是这个块支配了谁
             HashSet<BasicBlock> notDomedByBlock = new HashSet<>();
             DFSForNotDomed(entry, block, notDomedByBlock);
             ArrayList<BasicBlock> domiList = new ArrayList<>();
@@ -102,6 +102,7 @@ public class CFG {
         }
     }
 
+    //使用DFS找到从entry到dest经过了哪些块，这些块一定不被dest支配，以及其他不经过dest也能达到的块，也不受dest的支配
     public void DFSForNotDomed(BasicBlock entry, BasicBlock dest, HashSet<BasicBlock> notDomed) {
         //System.out.println("in this dfs: "+ entry.getName());
         if (dest.equals(entry)) {
@@ -147,10 +148,6 @@ public class CFG {
         function.setDomiChildren(childMap);
     }
 
-    public boolean isSDom(BasicBlock block, BasicBlock domedBlock) {
-        return !block.equals(domedBlock);
-    }
-
     //1.block和domedBlock必须严格支配,也就是二者不相等
     //2.同时A不严格支配任何严格支配B的节点
     //因此，遍历A支配的所有节点，找到不与A和B相同的节点
@@ -178,9 +175,6 @@ public class CFG {
             ArrayList<BasicBlock> subList = entry.getValue();
             for (BasicBlock sub : subList) {
                 BasicBlock tmp = block;
-                //block对应a
-                //sub对应b
-                //tmp对应x
                 //检查是否是严格支配
                 while (!tmp.getDomBlocks().contains(sub) || tmp.equals(sub)) {
                     DFMap.get(tmp).add(sub);

@@ -30,9 +30,8 @@ j block_1
 
 block_1:
 
-# ret i32 %local_var_5
-lw $v0, -8($sp)
-
+# ret i32* %local_var_7
+move $v0 $t0
 jr $ra
 
 block_2:

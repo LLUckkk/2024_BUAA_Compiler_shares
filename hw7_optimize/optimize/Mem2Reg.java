@@ -64,14 +64,14 @@ public class Mem2Reg {
         for (Use use : useList) {
             assert use.getUser() instanceof Instr;
             Instr user = (Instr) use.getUser();
-            if(user instanceof StoreInstr){
+            if (user instanceof StoreInstr) {
                 defInstrs.add(user);
-                if(! defBlocks.contains(user.getParentBlock()) && ! user.getParentBlock().isRemoved()){
+                if (!defBlocks.contains(user.getParentBlock()) && !user.getParentBlock().isRemoved()) {
                     defBlocks.add(user.getParentBlock());
                 }
-            } else if(user instanceof LoadInstr){
+            } else if (user instanceof LoadInstr) {
                 useInstrs.add(user);
-                if( ! defBlocks.contains(user.getParentBlock()) && ! user.getParentBlock().isRemoved()){
+                if (!defBlocks.contains(user.getParentBlock()) && !user.getParentBlock().isRemoved()) {
                     useBlocks.add(user.getParentBlock());
                 }
             }
@@ -80,8 +80,8 @@ public class Mem2Reg {
 
     public boolean canInsertPhi(Instr instr) {
         //TODO:这里之前还是写了destType是Int32？
-        return instr instanceof AllocaInstr && (((PointerType)instr.getType()).getDestType().isInt32() ||
-                ((PointerType)instr.getType()).getDestType().isChar8());
+        return instr instanceof AllocaInstr && (((PointerType) instr.getType()).getDestType().isInt32() ||
+                ((PointerType) instr.getType()).getDestType().isChar8());
     }
 
 

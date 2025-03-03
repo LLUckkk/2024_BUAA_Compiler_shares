@@ -22,7 +22,7 @@ move i32 1 %local_var_7
 br label %block_1
 
 block_1:
-ret i32 %local_var_5
+ret i32* %local_var_7
 
 block_2:
 %local_var_4 = sub i32 0, 1

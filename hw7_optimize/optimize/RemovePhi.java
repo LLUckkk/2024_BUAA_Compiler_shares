@@ -8,10 +8,10 @@ import mips.Register;
 
 import java.util.*;
 
-public class EliminatePhi {
+public class RemovePhi {
     public Module module;
 
-    public EliminatePhi(Module module) {
+    public RemovePhi(Module module) {
         this.module = module;
     }
 
