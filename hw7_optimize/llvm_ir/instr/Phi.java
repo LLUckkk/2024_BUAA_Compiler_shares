@@ -29,4 +29,26 @@ public class Phi extends Instr {
     public ArrayList<Value> getOptions() {
         return operands;
     }
+
+    public boolean willUse(){
+        return true;
+    }
+
+    public String toString() {
+        //  %4 = phi i32 [ 1, %2 ], [ %6, %5 ]
+        ArrayList<Value> options = getOptions();
+        StringBuilder result = new StringBuilder();
+        result.append(name).append(" = phi ").append(type).append(" ");
+        for (int i = 0; i < foreBlocks.size(); i++) {
+            BasicBlock bb = foreBlocks.get(i);
+            Value option = options.get(i);
+            // 将每个选项格式化为 "[ value, %basicBlock ]" 的形式
+            result.append("[ ").append(option.getName()).append(", %").append(bb.getName()).append(" ]");
+            // 如果不是最后一个元素，则添加逗号
+            if (i < foreBlocks.size() - 1) {
+                result.append(", ");
+            }
+        }
+        return result.toString();
+    }
 }

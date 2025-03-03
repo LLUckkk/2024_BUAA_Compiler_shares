@@ -11,14 +11,19 @@ public class OptimizeManager {
     }
 
     public void optimize(Module module) {
+        new SimplifyBB(module).optimize();
+        Printer.printOriginLLVM(module);
         new CFG(module).optimize();
 
-        //new Mem2Reg(module).optimize();
+        new Mem2Reg(module).optimize();
+
 
         new ActiveAnalysis(module).optimize();
         new DistributeReg(module).optimize();
 
-        //new EliminatePhi(module).optimize();
-        //Printer.printLLVM(module);
+        Printer.printPhiLLVM(module);
+
+        new EliminatePhi(module).optimize();
+        Printer.printMoveLLVM(module);
     }
 }

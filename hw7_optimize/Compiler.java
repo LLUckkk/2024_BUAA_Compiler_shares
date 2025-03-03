@@ -23,12 +23,12 @@ public class Compiler {
         //如果没有错误,则进行后续的编译过程
         if (Printer.noError()) {
             //生成中间代码LLVM IR
-            LLVMManager.mode = LLVMManager.DEFAULT_MODE;
+            LLVMManager.mode = LLVMManager.AUTO_INSERT_MODE;
             compUnit.genIR();
             Module module = LLVMManager.getInstance().getModule();
-            Printer.printOriginLLVM(module); //未优化的中间代码
+            //Printer.printOriginLLVM(module); //未优化的中间代码
             //优化部分
-            LLVMManager.mode = LLVMManager.OPTIMIZE_MODE;
+            LLVMManager.mode = LLVMManager.DEFAULT_MODE;
             OptimizeManager optimizer = OptimizeManager.getInstance();
             optimizer.optimize(module);
             //生成目标代码mips

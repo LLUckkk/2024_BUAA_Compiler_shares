@@ -11,7 +11,7 @@ public class StringLiteral extends Value {
     public StringLiteral(String name, String value) {
         super(new PointerType(new ArrayType(BaseType.CHAR8, value.length() + 1)), name);
         this.value = value;
-        if (LLVMManager.mode == LLVMManager.DEFAULT_MODE) {
+        if (LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE) {
             LLVMManager.getInstance().addStringLiteral(this);
         }
     }

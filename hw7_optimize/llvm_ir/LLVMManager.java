@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Stack;
 
 public class LLVMManager {
-    public static int DEFAULT_MODE = 1;
-    public static int OPTIMIZE_MODE = 0;
-    public static int mode = OPTIMIZE_MODE;
+    public static int AUTO_INSERT_MODE = 1;
+    public static int DEFAULT_MODE = 0;
+    public static int mode = DEFAULT_MODE;
 
     private static LLVMManager irBuilder = new LLVMManager();
 
@@ -63,7 +63,7 @@ public class LLVMManager {
 
     public String genVarNameForPhi(Function f){
         int curIndex = indexMap.get(f);
-        String name = GLOBAL_VAR_PREFIX + curIndex;
+        String name = LOCAL_VAR_PREFIX + curIndex;
         indexMap.put(f, curIndex + 1);
         return name;
     }

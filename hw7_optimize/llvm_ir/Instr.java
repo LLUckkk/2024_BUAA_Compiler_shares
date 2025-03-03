@@ -12,7 +12,9 @@ public class Instr extends User {
         this.instrType = instrType;
         this.parent = null;
         //IRBuilder的mode还没太懂是什么意
-        LLVMManager.getInstance().addInstr(this);
+        if(LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE){
+            LLVMManager.getInstance().addInstr(this);
+        }
     }
 
     public BasicBlock getParentBlock() {

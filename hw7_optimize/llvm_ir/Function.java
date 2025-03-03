@@ -26,7 +26,7 @@ public class Function extends User {
         this.returnType = returnType;
         this.params = new ArrayList<>();
         this.blocks = new LinkedList<>();
-        if (LLVMManager.mode == LLVMManager.DEFAULT_MODE) {
+        if (LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE) {
             LLVMManager.getInstance().addFunction(this);
         }
     }

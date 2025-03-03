@@ -24,13 +24,18 @@ public class EqExp extends Exp {
         Value operand2;
         Value ans;
         if (children.size() == 1) {
+//            if (!operand1.getType().isInt32()) {
+//                operand1 = new ZextInstr(LLVMManager.getInstance().genLocalVarName(), operand1, BaseType.INT32);
+//            }
+            if(operand1.getType().isInt32()){
+                operand1 = new IcmpInstr(LLVMManager.getInstance().genLocalVarName(),
+                        IcmpInstr.IcmpCond.NE, operand1, new Constant(0));
+            }
+            return operand1;
+        } else {
             if (!operand1.getType().isInt32()) {
                 operand1 = new ZextInstr(LLVMManager.getInstance().genLocalVarName(), operand1, BaseType.INT32);
             }
-            operand1 = new IcmpInstr(LLVMManager.getInstance().genLocalVarName(),
-                    IcmpInstr.IcmpCond.NE, operand1, new Constant(0));
-            return operand1;
-        } else {
             for (int i = 1; i < children.size(); i++) {
                 if (children.get(i) instanceof TokenNode) {
                     if (!operand1.getType().isInt32()) {

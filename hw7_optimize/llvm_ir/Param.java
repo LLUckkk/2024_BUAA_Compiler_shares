@@ -7,7 +7,7 @@ public class Param extends Value {
 
     public Param(LLVMType type, String name) {
         super(type, name);
-        if (LLVMManager.mode == LLVMManager.DEFAULT_MODE) {
+        if (LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE) {
             LLVMManager.getInstance().addParam(this);
         }
         belong = null;

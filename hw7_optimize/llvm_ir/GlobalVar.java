@@ -13,7 +13,9 @@ public class GlobalVar extends User {
     public GlobalVar(LLVMType type, String name, Initial init) {
         super(type, name);
         this.init = init;
-        LLVMManager.getInstance().addGlobalVar(this);
+        if(LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE){
+            LLVMManager.getInstance().addGlobalVar(this);
+        }
     } //是一个指针变量
 
     public String toString() {

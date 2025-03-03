@@ -6,6 +6,7 @@ import llvm_ir.instr.AllocaInstr;
 import llvm_ir.instr.LoadInstr;
 import llvm_ir.instr.Phi;
 import llvm_ir.instr.StoreInstr;
+import llvm_ir.type.PointerType;
 
 import java.util.*;
 
@@ -21,6 +22,12 @@ public class Mem2Reg {
 
     public Mem2Reg(Module module) {
         this.module = module;
+        this.curAlloca = null;
+        this.useBlocks = null;
+        this.defBlocks = null;
+        this.useInstrs = null;
+        this.defInstrs = null;
+        this.stack = null;
     }
 
     public void optimize() {
@@ -55,17 +62,17 @@ public class Mem2Reg {
         //计算出useBlock和defBlock
         ArrayList<Use> useList = instr.getUseList();
         for (Use use : useList) {
+            assert use.getUser() instanceof Instr;
             Instr user = (Instr) use.getUser();
-            BasicBlock parentBlock = user.getParentBlock();
-            if (user instanceof StoreInstr) {
+            if(user instanceof StoreInstr){
                 defInstrs.add(user);
-                if (!defBlocks.contains(parentBlock)) {
-                    defBlocks.add(parentBlock);
+                if(! defBlocks.contains(user.getParentBlock()) && ! user.getParentBlock().isRemoved()){
+                    defBlocks.add(user.getParentBlock());
                 }
-            } else if (user instanceof LoadInstr) {
+            } else if(user instanceof LoadInstr){
                 useInstrs.add(user);
-                if (!defBlocks.contains(parentBlock)) {
-                    useBlocks.add(parentBlock);
+                if( ! defBlocks.contains(user.getParentBlock()) && ! user.getParentBlock().isRemoved()){
+                    useBlocks.add(user.getParentBlock());
                 }
             }
         }
@@ -73,7 +80,8 @@ public class Mem2Reg {
 
     public boolean canInsertPhi(Instr instr) {
         //TODO:这里之前还是写了destType是Int32？
-        return instr instanceof AllocaInstr;
+        return instr instanceof AllocaInstr && (((PointerType)instr.getType()).getDestType().isInt32() ||
+                ((PointerType)instr.getType()).getDestType().isChar8());
     }
 
 
@@ -161,7 +169,7 @@ public class Mem2Reg {
         }
         for (int i = 0; i < cnt; i++) {
             stack.pop();
-        }
+        } //将这个变量的value出栈
     }
 
     public void setNewValue(Instr instr, Value newValue) {

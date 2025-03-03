@@ -13,18 +13,17 @@ public class CFG {
     private Module module;
 
     //流图记录了前驱和后继的集合
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> foreMap;
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> subMap;
+    private HashMap<BasicBlock, ArrayList<BasicBlock>> preMap;
+    private HashMap<BasicBlock, ArrayList<BasicBlock>> sucMap;
     //dom记录了每个节点的支配节点集合，也就是每个节点支配了哪些块
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> domiMap;
-    //直接支配
-    private HashMap<BasicBlock, BasicBlock> domiParent;
-    private HashMap<BasicBlock, ArrayList<BasicBlock>> domiChildren;
-    //DF
+    private HashMap<BasicBlock, ArrayList<BasicBlock>> domMap;
+    //直接支配，键值是被支配的块，值是直接支配它的块
+    private HashMap<BasicBlock, BasicBlock> parentMap;
+    //domiChildren记录了每个节点的直接支配节点集合
+    private HashMap<BasicBlock, ArrayList<BasicBlock>> childMap;
+    //DF记录每个节点的支配边界
     private HashMap<BasicBlock, ArrayList<BasicBlock>> DFMap;
 
-
-    //CFG构建了基本块之间的相互关系，非常有用——写！
 
     public CFG(Module module) {
         this.module = module;
@@ -33,18 +32,18 @@ public class CFG {
     public void optimize() {
         LinkedList<Function> functions = module.getFunctions();
         for (Function f : functions) {
-            foreMap = new HashMap<>();
-            subMap = new HashMap<>();
-            domiMap = new HashMap<>();
-            domiParent = new HashMap<>();
-            domiChildren = new HashMap<>();
+            preMap = new HashMap<>();
+            sucMap = new HashMap<>();
+            domMap = new HashMap<>();
+            parentMap = new HashMap<>();
+            childMap = new HashMap<>();
             DFMap = new HashMap<>();
             for (BasicBlock block : f.getBlocks()) {
-                foreMap.put(block, new ArrayList<>());
-                subMap.put(block, new ArrayList<>());
-                domiMap.put(block, new ArrayList<>());
-                domiParent.put(block, null);
-                domiChildren.put(block, new ArrayList<>());
+                preMap.put(block, new ArrayList<>());
+                sucMap.put(block, new ArrayList<>());
+                domMap.put(block, new ArrayList<>());
+                parentMap.put(block, null);
+                childMap.put(block, new ArrayList<>());
                 DFMap.put(block, new ArrayList<>());
             }
             genCFG(f);
@@ -56,31 +55,32 @@ public class CFG {
 
     public void genCFG(Function f) {
         //得到CFG图
-        //根据基本块跳转指令来记录每一个基本块的next和prev基本块们就可以
+        //根据基本块跳转指令来记录每一个基本块的next和prev基本块就可以
         LinkedList<BasicBlock> blocks = f.getBlocks();
         for (BasicBlock block : blocks) {
             Instr lastInstr = block.getLastInstr();
             if (lastInstr instanceof BrJumpInstr) {
-                lastInstr = block.getFirstBrInstr();
+                //lastInstr = block.getFirstBrInstr();
+                lastInstr = block.getLastInstr();
                 BasicBlock destBlock = ((BrJumpInstr) lastInstr).getDestBlock();
-                foreMap.get(destBlock).add(block);
-                subMap.get(block).add(destBlock);
+                preMap.get(destBlock).add(block);
+                sucMap.get(block).add(destBlock);
             } else if (lastInstr instanceof BrBranchInstr) {
                 lastInstr = block.getFirstBrInstr();
                 BasicBlock trueBlock = ((BrBranchInstr) lastInstr).getTrueBlock();
                 BasicBlock falseBlock = ((BrBranchInstr) lastInstr).getFalseBlock();
-                foreMap.get(trueBlock).add(block);
-                foreMap.get(falseBlock).add(block);
-                subMap.get(block).add(trueBlock);
-                subMap.get(block).add(falseBlock);
+                preMap.get(trueBlock).add(block);
+                preMap.get(falseBlock).add(block);
+                sucMap.get(block).add(trueBlock);
+                sucMap.get(block).add(falseBlock);
             }
         }
         for (BasicBlock block : blocks) {
-            block.setForeBlocks(foreMap.get(block));
-            block.setSubBlocks(subMap.get(block));
+            block.setForeBlocks(preMap.get(block));
+            block.setSubBlocks(sucMap.get(block));
         }
-        f.setForeMap(foreMap);
-        f.setSubMap(subMap);
+        f.setForeMap(preMap);
+        f.setSubMap(sucMap);
         printCFG(f);
     }
 
@@ -97,7 +97,7 @@ public class CFG {
                     domiList.add(bb);
                 }
             }
-            domiMap.put(block, domiList);
+            domMap.put(block, domiList);
             block.setDomBlocks(domiList);
         }
     }
@@ -132,19 +132,19 @@ public class CFG {
             //可以临时获得一个严格支配domedBlock的集合
             for (BasicBlock domedBlock : domiList) {
                 if (isIDom(block, domedBlock)) {
-                    domiParent.put(domedBlock, block);
-                    domiChildren.get(block).add(domedBlock);
+                    parentMap.put(domedBlock, block);
+                    childMap.get(block).add(domedBlock);
                 }
             }
         }
         //写入基本块
         for (BasicBlock block : blocks) {
-            block.setParentBlock(domiParent.get(block));
-            block.setChildBlocks(domiChildren.get(block));
+            block.setParentBlock(parentMap.get(block));
+            block.setChildBlocks(childMap.get(block));
         }
         //写入函数
-        function.setDomiParent(domiParent);
-        function.setDomiChildren(domiChildren);
+        function.setDomiParent(parentMap);
+        function.setDomiChildren(childMap);
     }
 
     public boolean isSDom(BasicBlock block, BasicBlock domedBlock) {
@@ -173,7 +173,7 @@ public class CFG {
     public void genDF(Function f) {
         //用于生成phi指令
         LinkedList<BasicBlock> blocks = f.getBlocks();
-        for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry : subMap.entrySet()) {
+        for (Map.Entry<BasicBlock, ArrayList<BasicBlock>> entry : sucMap.entrySet()) {
             BasicBlock block = entry.getKey();
             ArrayList<BasicBlock> subList = entry.getValue();
             for (BasicBlock sub : subList) {
@@ -197,7 +197,7 @@ public class CFG {
     public void printCFG(Function f) {
         LinkedList<BasicBlock> blocks = f.getBlocks();
         for (BasicBlock block : blocks) {
-            ArrayList<BasicBlock> foreList = foreMap.get(block);
+            ArrayList<BasicBlock> foreList = preMap.get(block);
             System.out.print(block.getName() + " <== ");
             if (foreList.isEmpty()) {
                 System.out.println("null");
@@ -207,7 +207,7 @@ public class CFG {
                 }
                 System.out.println();
             }
-            ArrayList<BasicBlock> subList = subMap.get(block);
+            ArrayList<BasicBlock> subList = sucMap.get(block);
             if (subList.isEmpty()) {
                 System.out.println("null");
             } else {

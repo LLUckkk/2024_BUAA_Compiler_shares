@@ -126,8 +126,17 @@ public class Printer {
         }
     }
 
-    public static void printLLVM(Module module) {
-        String outputPath = "llvm_ir.txt";
+    public static void printPhiLLVM(Module module){
+        String outputPath = "llvm_ir_phi.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath, false))) {
+            writer.write(module.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void printMoveLLVM(Module module) {
+        String outputPath = "llvm_ir_move.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath, false))) {
             writer.write(module.toString());
         } catch (IOException e) {

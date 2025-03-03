@@ -1,10 +1,4 @@
 .data
-global_var_0: .word 0, 1, 2, 3, 4, 5, 6, 7, 0, 0
-
-global_var_1: .word 1
-
-str_0: .asciiz " "
-
 
 
 
@@ -13,149 +7,43 @@ jal main
 
 j exit
 
-func_func:
-block_0:
-
-# %local_var_0 = load i32, i32* @global_var_1
-la $k0, global_var_1
-lw $t0, 0($k0)
-
-
-# %local_var_1 = add i32 %local_var_0, 1
-li $k1 1
-addu $t0, $t0, $k1
-
-
-# store i32 %local_var_1, i32* @global_var_1
-la $k1, global_var_1
-sw $t0, 0($k1)
-
-
-# %local_var_2 = load i32, i32* @global_var_1
-la $k0, global_var_1
-lw $t0, 0($k0)
-
-
-# ret i32 %local_var_2
-move $v0 $t0
-jr $ra
-
 main:
 
-# %local_var_0 = call i32 @func_func()
-sw $t0, -4($sp)
+# %local_var_3 = icmp sgt i32 1, 0
+li $k0 1
+li $k1 0
+sgt $t0, $k0, $k1
 
-sw $t2, -8($sp)
+# br i1 %local_var_3, label %block_0, label %block_2
+bne $t0, $zero, block_0
+j block_2
 
-sw $t1, -12($sp)
+block_0:
 
-sw $sp, -16($sp)
-
-sw $ra, -20($sp)
-
-addi $sp, $sp, -20
-
-jal func_func
-
-lw $ra, 0($sp)
-
-lw $sp, 4($sp)
-
-lw $t0, -4($sp)
-
-lw $t2, -8($sp)
-
-lw $t1, -12($sp)
-
-move $t0 $v0
-
-# %local_var_1 = getelementptr inbounds [10 x i32], [10 x i32]* @global_var_0, i32 0, i32 %local_var_0
-la $k0, global_var_0
-sll $k1, $t0, 2
-
-addu $t0, $k0, $k1
+# move i32 1 %local_var_7
+move $k0 $t0
+sw $k0, -4($sp)
 
 
-# %local_var_2 = call i32 @func_func()
-sw $t0, -4($sp)
+# br label %block_1
+j block_1
 
-sw $t2, -8($sp)
+block_1:
 
-sw $t1, -12($sp)
+# ret i32 %local_var_5
+lw $v0, -8($sp)
 
-sw $sp, -16($sp)
-
-sw $ra, -20($sp)
-
-addi $sp, $sp, -20
-
-jal func_func
-
-lw $ra, 0($sp)
-
-lw $sp, 4($sp)
-
-lw $t0, -4($sp)
-
-lw $t2, -8($sp)
-
-lw $t1, -12($sp)
-
-move $t1 $v0
-
-# %local_var_3 = getelementptr inbounds [10 x i32], [10 x i32]* @global_var_0, i32 0, i32 %local_var_2
-la $k0, global_var_0
-sll $k1, $t1, 2
-
-addu $t1, $k0, $k1
-
-
-# %local_var_4 = load i32, i32* %local_var_3
-lw $t1, 0($t1)
-
-
-# store i32 %local_var_4, i32* %local_var_1
-sw $t1, 0($t0)
-
-
-# %local_var_5 = getelementptr inbounds [10 x i32], [10 x i32]* @global_var_0, i32 0, i32 2
-la $k0, global_var_0
-addi $t0, $k0, 8
-
-
-# %local_var_6 = load i32, i32* %local_var_5
-lw $t0, 0($t0)
-
-
-# %local_var_7 = getelementptr inbounds [10 x i32], [10 x i32]* @global_var_0, i32 0, i32 3
-la $k0, global_var_0
-addi $t1, $k0, 12
-
-
-# %local_var_8 = load i32, i32* %local_var_7
-lw $t1, 0($t1)
-
-
-# call void @putint(i32 %local_var_6)
-
-move $a0 $t0
-li $v0 1
-syscall
-
-# call void @putstr(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @str_0, i64 0, i64 0))
-la $a0, str_0
-li $v0 4
-syscall
-
-# call void @putint(i32 %local_var_8)
-
-move $a0 $t1
-li $v0 1
-syscall
-
-# ret i32 0
-li $v0 0
 jr $ra
+
+block_2:
+
+# %local_var_4 = sub i32 0, 1
+li $t0 -1
+
+# move i32 %local_var_4 %local_var_7
+
+# br label %block_1
+j block_1
 
 exit:
 li $v0 10

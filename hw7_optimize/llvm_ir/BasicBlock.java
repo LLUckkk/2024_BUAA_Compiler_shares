@@ -30,7 +30,9 @@ public class BasicBlock extends Value {
         this.instrList = new LinkedList<>();
         this.parentFunction = null;
         removed = false;
-        LLVMManager.getInstance().addBasicBlock(this);
+        if(LLVMManager.mode == LLVMManager.AUTO_INSERT_MODE){
+            LLVMManager.getInstance().addBasicBlock(this);
+        }
     }
 
     public Instr getFirstBrInstr() {
@@ -50,6 +52,10 @@ public class BasicBlock extends Value {
 
     public void setRemoved() {
         removed = true;
+    }
+
+    public boolean isRemoved() {
+        return removed;
     }
 
     public void setIn(HashSet<Value> in) {

@@ -46,7 +46,7 @@ public class EliminatePhi {
                 if (foreBlock.getSubBlocks().size() == 1) {
                     insertOnePcopy(pcopy, foreBlock);
                 } else {
-                    insertMultiPcopy(pcopy, foreBlock, block);
+                    insertBlockPcopy(pcopy, foreBlock, block);
                 }
             }
             //遍历所有的phi指令，每个phi的option放到对应的pcopy中
@@ -99,14 +99,14 @@ public class EliminatePhi {
             moves.add(move);
         }
 
-        //循环赋值：
+        //循环赋值,要实现move的并行执行
         ArrayList<MoveInstr> tmpList = new ArrayList<>();
         HashSet<Value> record = new HashSet<>();
         int size = moves.size();
         for (int i = 0; i < size; i++) {
             Value value = moves.get(i).getDest();
             if (!(value instanceof Constant) && !record.contains(value)) {
-                //检查后续value同时是某一个的src
+                //检查后续value是否同时是某一个的src，若是则有循环赋值
                 boolean loopFlag = false;
                 for (int j = i + 1; j < moves.size(); j++) {
                     if (moves.get(j).getSrc().equals(value)) {
@@ -115,7 +115,7 @@ public class EliminatePhi {
                     }
                 }
                 if (loopFlag) {
-                    Value interValue = new Value(value.getType(), value.getName() + "_inter");
+                    Value interValue = new Value(value.getType(), value.getName() + "_tmp");
                     for (MoveInstr move : moves) {
                         if (move.getSrc().equals(interValue)) {
                             move.setSrc(interValue);
@@ -146,7 +146,7 @@ public class EliminatePhi {
                 if (conflictFlag) {
                     Value interValue = new Value(value.getType(), value.getName() + "_inter");
                     for (MoveInstr move : moves) {
-                        if (move.getSrc().equals(interValue)) {
+                        if (move.getSrc().equals(value)) {
                             move.setSrc(interValue);
                         }
                     }
@@ -156,6 +156,7 @@ public class EliminatePhi {
                 record.add(value);
             }
         }
+        //将临时变量的move语句插在move的最前面
         for (MoveInstr move : tmpList) {
             moves.addFirst(move);
         }
@@ -165,13 +166,14 @@ public class EliminatePhi {
 
     public void insertOnePcopy(Pcopy pcopy, BasicBlock block) {
         LinkedList<Instr> instrs = block.getInstrList();
-        Instr firstBrInstr = block.getFirstBrInstr(); //注意这个坑点
+        Instr lastInstr = instrs.getLast(); //注意这个坑点
         //插在第一个br之前
-        instrs.add(instrs.indexOf(firstBrInstr), pcopy);
+        assert (lastInstr instanceof BrBranchInstr) || (lastInstr instanceof BrJumpInstr);
+        instrs.add(instrs.indexOf(lastInstr), pcopy);
         pcopy.setParent(block);
     }
 
-    public void insertMultiPcopy(Pcopy pcopy, BasicBlock foreBlock, BasicBlock subBlock) {
+    public void insertBlockPcopy(Pcopy pcopy, BasicBlock foreBlock, BasicBlock subBlock) {
         Function f = foreBlock.getParentFunction();
         BasicBlock interBlock = new BasicBlock(LLVMManager.getInstance().genBlockName());
         interBlock.setParentFunction(f);
@@ -181,7 +183,7 @@ public class EliminatePhi {
         interBlock.addInstr(pcopy);
         pcopy.setParent(interBlock);
         //修改跳转关系
-        BrBranchInstr brInstr = (BrBranchInstr) foreBlock.getFirstBrInstr();
+        BrBranchInstr brInstr = (BrBranchInstr) foreBlock.getLastInstr();
         BasicBlock trueBlock = brInstr.getTrueBlock();
         if (subBlock.equals(trueBlock)) {
             brInstr.setTrueBlock(interBlock);
