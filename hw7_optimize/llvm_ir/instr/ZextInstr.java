@@ -13,12 +13,10 @@ import mips.assembly.MoveAsmb;
 
 public class ZextInstr extends Instr {
     private LLVMType destType;
-    private Value src;
 
     public ZextInstr(String name, Value src, LLVMType destType) {
         super(destType, name, InstrType.ZEXT);
         this.destType = destType;
-        this.src = src;
         addOperand(src);
     }
 
@@ -26,7 +24,12 @@ public class ZextInstr extends Instr {
         return true;
     }
 
+    private Value getSrc(){
+        return operands.get(0);
+    }
+
     public String toString() {
+        Value src = getSrc();
         StringBuilder sb = new StringBuilder();
         sb.append(name);
         sb.append(" = zext ");
@@ -64,6 +67,7 @@ public class ZextInstr extends Instr {
 //    }
 
     public void toMips() {
+        Value src = getSrc();
         super.toMips();
         Register reg = Register.K0;
         if (src instanceof Constant) {

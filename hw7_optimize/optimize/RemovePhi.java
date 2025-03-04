@@ -59,7 +59,7 @@ public class RemovePhi {
                     for (int i = 0; i < options.size(); i++) {
                         Value value = options.get(i);
                         if (!(value instanceof Undefined)) {
-                            pcopyList.get(i).addCopy(instr, value);
+                            pcopyList.get(i).addCopy(value, instr);
                         }
                     }
                     iterator.remove();

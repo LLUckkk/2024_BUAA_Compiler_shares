@@ -12,9 +12,10 @@ import mips.assembly.MoveAsmb;
 public class ReturnInstr extends Instr {
     public ReturnInstr(String name, Value retValue) {
         super(BaseType.VOID, name, InstrType.RETURN);
-        if (retValue != null) {
-            addOperand(retValue);
-        }
+//        if (retValue != null) {
+//            addOperand(retValue);
+//        }
+        addOperand(retValue);
     }
 
     public Value getRetValue() {
